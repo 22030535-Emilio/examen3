@@ -37,6 +37,10 @@ interface Announcement {
 }
 
 export default function AdminDashboard() {
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [loginError, setLoginError] = useState(false);
+  
   const [activeTab, setActiveTab] = useState<'students' | 'announcements'>('students');
   const [students, setStudents] = useState<Student[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -48,8 +52,22 @@ export default function AdminDashboard() {
   const [gradeForm, setGradeForm] = useState({ subject: '', grade: '' });
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isAdminAuthenticated) {
+      fetchData();
+    }
+  }, [isAdminAuthenticated]);
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Pre-defined admin password for the demo
+    if (adminPassword === 'admin123') {
+      setIsAdminAuthenticated(true);
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+      setAdminPassword('');
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -114,6 +132,57 @@ export default function AdminDashboard() {
       console.error('Error updating grade:', err);
     }
   };
+
+  if (!isAdminAuthenticated) {
+    return (
+      <div className={styles.container} style={{ justifyContent: 'center', alignItems: 'center', background: 'radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={styles.modalContent}
+          style={{ maxWidth: '400px', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
+        >
+          <div className={styles.logo} style={{ justifyContent: 'center', marginBottom: '1.5rem' }}>
+            <ShieldCheck size={48} />
+          </div>
+          <h2 style={{ marginBottom: '0.5rem' }}>Acceso Restringido</h2>
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '2rem' }}>
+            Ingresa el código de seguridad para gestionar el portal académico.
+          </p>
+
+          <form onSubmit={handleAdminLogin}>
+            <div className={styles.formGroup}>
+              <input 
+                type="password" 
+                placeholder="Código de acceso"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+                autoFocus
+                style={{ textAlign: 'center', fontSize: '1.1rem', letterSpacing: '4px' }}
+              />
+            </div>
+            {loginError && (
+              <p style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem' }}>
+                Código incorrecto. Intenta de nuevo.
+              </p>
+            )}
+            <button type="submit" className={styles.btnPrimary + ' ' + styles.btn} style={{ width: '100%', justifyContent: 'center', padding: '0.75rem' }}>
+              Verificar Identidad
+            </button>
+          </form>
+          <div style={{ marginTop: '2rem' }}>
+            <button 
+              onClick={() => window.location.href = '/dashboard'}
+              className={styles.btnOutline + ' ' + styles.btn} 
+              style={{ width: '100%', justifyContent: 'center' }}
+            >
+              Regresar al Portal Alumno
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
