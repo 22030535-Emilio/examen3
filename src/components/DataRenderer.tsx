@@ -34,18 +34,32 @@ function PrimitiveValue({ value, fieldKey = '' }: { value: any, fieldKey?: strin
   if (value === null || value === undefined) return <span className={styles.null}>—</span>;
   if (typeof value === 'boolean') return <span className={value ? styles.yes : styles.no}>{value ? 'Sí' : 'No'}</span>;
   
-  const str = String(value);
+  let str = String(value);
+  const isImgKey = isImageKey(fieldKey);
+  
+  // If it's an image key and looks like raw base64 (long, no spaces, not a URL), add prefix
+  if (isImgKey && str.length > 100 && !str.startsWith('data:') && !str.startsWith('http')) {
+    str = `data:image/jpeg;base64,${str}`;
+  }
   
   // Render as image if key or value suggests it
-  if (isImageKey(fieldKey) || isImageUrl(str)) {
+  if (isImgKey || isImageUrl(str)) {
     return (
       <div className={styles.imageWrapper}>
-        <img src={str} alt={formatKey(fieldKey) || 'Imagen'} className={styles.profileImage} />
+        <img 
+          src={str} 
+          alt={formatKey(fieldKey) || 'Imagen'} 
+          className={styles.profileImage}
+          onError={(e) => {
+            // If image fails, show a placeholder or text
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
       </div>
     );
   }
   
-  // Truncate very long strings (like tokens or base64)
+  // Truncate very long strings ONLY if they are not images
   if (str.length > 80) {
     return (
       <span className={styles.truncated} title={str}>
