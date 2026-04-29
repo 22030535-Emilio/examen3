@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Green Theme Palette */
+  --primary: #10b981; /* Emerald 500 */
+  --primary-hover: #059669; /* Emerald 600 */
+  --secondary: #0ea5e9; /* Sky 500 - as a nice complement */
+  --accent: #f43f5e; /* Rose 500 - for errors/alerts */
+  
+  --background: #f0fdf4; /* Green 50 */
+  --foreground: #022c22; /* Green 950 */
+  
+  --card-bg: #ffffff;
+  --card-border: #10b981; /* Strong green borders for a unique look */
+  --sidebar-bg: #064e3b; /* Green 900 for sidebar */
+  --sidebar-fg: #ecfdf5; /* Green 50 for sidebar text */
+  
+  --text-main: #064e3b; /* Green 900 */
+  --text-muted: #059669; /* Emerald 600 */
+  
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: #10b981;
+  
+  /* Unique "Neo-Brutalist" or bold shadows */
+  --shadow-sm: 2px 2px 0px 0px rgba(16, 185, 129, 0.2);
+  --shadow-md: 4px 4px 0px 0px rgba(16, 185, 129, 0.4);
+  --shadow-lg: 8px 8px 0px 0px rgba(16, 185, 129, 0.5);
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --font-inter: 'Inter', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
+}
+
+[data-theme='dark'] {
+  --primary: #34d399; /* Emerald 400 */
+  --primary-hover: #10b981; /* Emerald 500 */
+  --secondary: #38bdf8; /* Sky 400 */
+  
+  --background: #022c22; /* Green 950 */
+  --foreground: #ecfdf5; /* Green 50 */
+  
+  --card-bg: #064e3b; /* Green 900 */
+  --card-border: #34d399; /* Emerald 400 */
+  --sidebar-bg: #020617; /* Slate 950 */
+  --sidebar-fg: #ecfdf5; /* Green 50 */
+  
+  --text-main: #f0fdf4; /* Green 50 */
+  --text-muted: #a7f3d0; /* Emerald 200 */
+  
+  --glass-bg: rgba(6, 78, 59, 0.85);
+  --glass-border: #34d399;
+  
+  --shadow-sm: 2px 2px 0px 0px rgba(52, 211, 153, 0.3);
+  --shadow-md: 4px 4px 0px 0px rgba(52, 211, 153, 0.5);
+  --shadow-lg: 8px 8px 0px 0px rgba(52, 211, 153, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-inter);
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-outfit);
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  background: var(--card-bg);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Glassmorphism utility modified for the new bold style */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+}
+
+/* Skeleton Loading Animation */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #d1fae5 25%, #a7f3d0 50%, #d1fae5 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+  border: 1px solid var(--card-border);
+}
+
+[data-theme='dark'] .skeleton {
+  background: linear-gradient(90deg, #064e3b 25%, #047857 50%, #064e3b 75%);
+  background-size: 1000px 100%;
+}
+
+/* Base Card Styles for Neo-brutalism feel */
+.card-base {
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.card-base:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-md);
+}

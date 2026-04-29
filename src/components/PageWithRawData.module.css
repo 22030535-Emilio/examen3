@@ -1,0 +1,68 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.rawSection {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+.rawToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: var(--card-bg);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.rawToggle:hover {
+  background: var(--background);
+}
+
+.rawToggleOpen {
+  border-bottom: 1px solid var(--card-border);
+}
+
+.rawIcon {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  width: 14px;
+}
+
+.badge {
+  margin-left: auto;
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.08em;
+}
+
+.rawContent {
+  background: #0f172a;
+  padding: 1.5rem;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.pre {
+  margin: 0;
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

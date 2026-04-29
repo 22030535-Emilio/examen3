@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Examen 3 - Portal Académico</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #fff;
+        }
+        h1, h2, h3 {
+            color: #064e3b;
+        }
+        h1 {
+            border-bottom: 3px solid #10b981;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 2rem;
+            border-bottom: 2px solid #a7f3d0;
+            padding-bottom: 5px;
+        }
+        h3 {
+            margin-top: 1.5rem;
+            color: #059669;
+        }
+        ul {
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        code {
+            background-color: #f0fdf4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            color: #047857;
+            font-size: 0.9em;
+            border: 1px solid #d1fae5;
+        }
+        pre {
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
+        }
+        pre code {
+            background-color: transparent;
+            border: none;
+            color: #334155;
+            padding: 0;
+        }
+        .file-section {
+            background-color: #f9fafb;
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .file-section p {
+            margin-top: 0.5rem;
+        }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-style: italic;
+            color: #64748b;
+            font-size: 0.9em;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+        }
+        .highlight {
+            font-weight: 600;
+            color: #059669;
+        }
+        
+        /* Imprimir optimizaciones */
+        @media print {
+            body { padding: 0; max-width: 100%; }
+            .file-section { page-break-inside: avoid; }
+            h2 { page-break-after: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Examen 3 - Portal Académico SII ITC</h1>
+    
+    <p>Proyecto desarrollado para consumir la API REST del sistema SII ITC, permitiendo la autenticación de usuarios y visualización estructurada de su información académica.</p>
+
+    <h2>🚀 Tecnologías Utilizadas</h2>
+    <ul>
+        <li><span class="highlight">Framework Principal:</span> <strong>Next.js (App Router)</strong> - Elegido por su robustez, manejo de rutas API integradas (crucial para solucionar el proxy CORS) y renderizado optimizado.</li>
+        <li><span class="highlight">Librería UI:</span> <strong>React 18</strong></li>
+        <li><span class="highlight">Lenguaje:</span> <strong>TypeScript</strong> - Proporciona tipado estático para manejar las respuestas de la API de forma segura y predecible.</li>
+        <li><span class="highlight">Estilos:</span> <strong>Vanilla CSS</strong> (CSS Modules & CSS Variables) - Implementando un diseño único basado en "Neo-Brutalismo Moderno" con una paleta de colores verdes (Emerald/Forest).</li>
+        <li><span class="highlight">Iconografía:</span> <strong>Lucide React</strong></li>
+        <li><span class="highlight">Gestión de Estado:</span> <strong>React Context API</strong> (para la autenticación global de la sesión).</li>
+    </ul>
+
+    <h2>📂 Arquitectura y Explicación de Archivos</h2>
+    <p>A continuación se detalla la función de cada archivo clave dentro del código fuente (<code>src/</code>):</p>
+
+    <h3>1. Configuración y Utilidades Base</h3>
+    
+    <div class="file-section">
+        <strong><code>src/lib/api.ts</code></strong>
+        <p>Contiene la función <code>apiFetch</code>. Es el núcleo de las peticiones HTTP del frontend. Automáticamente inyecta el token JWT (usando <code>Bearer</code> y <code>x-auth-token</code>) en los headers y redirige las peticiones hacia nuestro Proxy local (<code>/api/external/...</code>) para evitar bloqueos CORS en el navegador.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/context/AuthContext.tsx</code></strong>
+        <p>Maneja el estado global de autenticación. Almacena el token JWT en el navegador (cookies/localStorage), provee las funciones <code>login</code> y <code>logout</code> a toda la aplicación, y protege las rutas redirigiendo al usuario si no está autenticado.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/app/globals.css</code></strong>
+        <p>Archivo de estilos globales. Define las variables de color (tema verde neo-brutalista), estilos de tipografía, animaciones básicas (<code>skeleton</code> de carga) y estilos base para las tarjetas (cards) de la interfaz.</p>
+    </div>
+
+    <h3>2. Infraestructura Backend (Proxy)</h3>
+    
+    <div class="file-section">
+        <strong><code>src/app/api/external/[...path]/route.ts</code></strong>
+        <p><strong>Archivo crítico para el funcionamiento.</strong> Es un servidor intermediario (Proxy) construido con Next.js API Routes. Recibe las peticiones del frontend y las reenvía a <code>https://sii.celaya.tecnm.mx</code>.</p>
+        <ul>
+            <li><em>¿Por qué es necesario?</em> Los navegadores bloquean peticiones directas desde <code>localhost</code> a dominios externos por políticas de seguridad CORS. Este archivo actúa como puente desde el lado del servidor de Node.js, donde CORS no aplica.</li>
+            <li><em>Funcionalidad:</em> Desactiva validaciones SSL estrictas (común en certificados autofirmados de servidores universitarios), espera que se resuelvan los parámetros dinámicos (Next.js v15+ Promise params) y reenvía cabeceras de autorización y el cuerpo de la petición original.</li>
+        </ul>
+    </div>
+
+    <h3>3. Componentes Reutilizables</h3>
+
+    <div class="file-section">
+        <strong><code>src/components/DataRenderer.tsx</code></strong>
+        <p>Componente altamente dinámico que recibe cualquier estructura JSON (objeto o array) y lo renderiza visualmente sin importar su forma. Detecta automáticamente si un valor es una imagen (basado en el nombre del campo o el contenido web) para mostrar etiquetas <code>&lt;img&gt;</code>, trunca textos muy largos (como tokens), genera tablas para listados y tarjetas detalladas para objetos singulares.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/components/PageWithRawData.tsx</code></strong>
+        <p>Componente envoltura (wrapper). Muestra en la parte superior el diseño estilizado (usando <code>DataRenderer</code>) y en la parte inferior provee un botón colapsable que permite ver el JSON puro (Datos crudos) que devolvió la API. Esto es útil para depuración y para cumplir con requisitos de transparencia de datos.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/components/Sidebar.tsx</code></strong>
+        <p>El menú de navegación lateral responsivo que permite al usuario navegar de forma fluida entre Perfil, Calificaciones, Kardex, Horario y el módulo extra de Success Kit.</p>
+    </div>
+
+    <h3>4. Vistas de la Aplicación (Rutas)</h3>
+
+    <div class="file-section">
+        <strong><code>src/app/login/page.tsx</code></strong>
+        <p>Pantalla de inicio de sesión. Envía las credenciales introducidas al proxy, intercepta la respuesta, extrae el token JWT específicamente de la ruta anidada <code>data.message.login.token</code> (formato específico de la API del SII ITC) y lo envía al contexto global de autenticación.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/app/dashboard/page.tsx</code></strong>
+        <p>Pantalla principal tras el login. Consume el endpoint de perfil (<code>/api/movil/estudiante</code>). Extrae los datos anidados en el campo <code>message</code> y los delega a los componentes de renderizado visual.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/app/grades/page.tsx</code></strong>
+        <p>Vista de Calificaciones. Consume el endpoint respectivo e incluye lógica compleja de procesamiento de datos para:</p>
+        <ul>
+            <li>Buscar materias en tiempo real.</li>
+            <li>Filtrar asignaturas por su periodo correspondiente.</li>
+            <li>Asignar colores de estatus (Verde Excelente, Azul Bien, Amarillo Suficiente, Rojo Reprobado) dependiendo de la calificación numérica, que el código extrae automáticamente detectando patrones de nombres de campos numéricos (como 'calificacion', 'grade', etc.).</li>
+        </ul>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/app/kardex/page.tsx</code></strong>
+        <p>Historial académico. Procesa el arreglo devuelto por la API, agrupa iterativamente las materias por semestre/ciclo y las renderiza en un diseño de tablas separadas cronológicamente.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/app/schedule/page.tsx</code></strong>
+        <p>Horario semestral. Mapea la respuesta, agrupa las clases por día de la semana, las ordena secuencialmente por hora de inicio, filtra datos inconsistentes ("Sin día") y asigna un color único y estructurado a cada día de la semana en un formato de agenda horizontal.</p>
+    </div>
+
+    <div class="file-section">
+        <strong><code>src/app/success-kit/page.tsx</code></strong>
+        <p><strong>Funcionalidad Adicional (Propuesta del Equipo).</strong> Implementa un conjunto de herramientas extra para aportar valor real al estudiante. Incluye una "Calculadora de Promedio Objetivo (GPA)" interactiva y un tablón de noticias/recordatorios simulado por su propio backend de datos independiente.</p>
+    </div>
+
+    <h2>🛠️ Instrucciones de Instalación y Ejecución</h2>
+    <ol>
+        <li>Asegúrate de tener <strong>Node.js</strong> (v18 o superior) instalado en tu equipo.</li>
+        <li>Clona o descarga este repositorio y extráelo.</li>
+        <li>Abre una terminal apuntando a la carpeta raíz del proyecto.</li>
+        <li>Instala las dependencias ejecutando:
+            <pre><code>npm install</code></pre>
+        </li>
+        <li>Inicia el servidor local en modo desarrollo:
+            <pre><code>npm run dev</code></pre>
+        </li>
+        <li>Abre tu navegador y dirígete a <code>http://localhost:3000</code> (o el puerto que indique la terminal, comúnmente 3001).</li>
+    </ol>
+
+    <div class="footer">
+        Desarrollado para la materia de Tecnologías y Aplicaciones en Internet.
+    </div>
+
+</body>
+</html>
