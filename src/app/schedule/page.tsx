@@ -59,18 +59,28 @@ function getRoomAndTeacher(item: any): { room: string; teacher: string } {
 const DAY_ORDER = ['lunes', 'martes', 'miercoles', 'miércoles', 'jueves', 'viernes', 'sabado', 'sábado', 'domingo'];
 
 export default function SchedulePage() {
-  const { token } = useAuth();
+  const { token, isLoading: authLoading } = useAuth();
   const [rawData, setRawData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) { setError('Sin token.'); setIsLoading(false); return; }
+    if (authLoading) return;
+
+    if (!token) { 
+      setError('Sin sesión activa.'); 
+      setIsLoading(false); 
+      return; 
+    }
+
+    setIsLoading(true);
+    setError(null);
+
     apiFetch<any>(endpoints.schedule, {}, token)
       .then(res => setRawData(res))
       .catch(err => setError(err.message))
       .finally(() => setIsLoading(false));
-  }, [token]);
+  }, [token, authLoading]);
 
   const schedule = useMemo(() => rawData ? extractArray(rawData) : [], [rawData]);
 

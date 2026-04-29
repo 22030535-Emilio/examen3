@@ -7,18 +7,28 @@ import { PageWithRawData } from '@/components/PageWithRawData';
 import styles from './Kardex.module.css';
 
 export default function KardexPage() {
-  const { token } = useAuth();
+  const { token, isLoading: authLoading } = useAuth();
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) { setError('Sin token.'); setIsLoading(false); return; }
+    if (authLoading) return;
+
+    if (!token) { 
+      setError('Sin sesión activa.'); 
+      setIsLoading(false); 
+      return; 
+    }
+
+    setIsLoading(true);
+    setError(null);
+
     apiFetch<any>(endpoints.kardex, {}, token)
       .then(res => setData(res))
       .catch(err => setError(err.message))
       .finally(() => setIsLoading(false));
-  }, [token]);
+  }, [token, authLoading]);
 
   if (isLoading) return (
     <div className={styles.container}>

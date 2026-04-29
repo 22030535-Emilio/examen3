@@ -7,18 +7,29 @@ import { PageWithRawData } from '@/components/PageWithRawData';
 import styles from './Dashboard.module.css';
 
 export default function DashboardPage() {
-  const { token } = useAuth();
+  const { token, isLoading: authLoading } = useAuth();
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) { setError('Sin token. Por favor inicia sesión.'); setIsLoading(false); return; }
+    // Wait for auth context to finish loading from cookies
+    if (authLoading) return;
+
+    if (!token) { 
+      setError('Sin sesión activa. Por favor inicia sesión.'); 
+      setIsLoading(false); 
+      return; 
+    }
+
+    setIsLoading(true);
+    setError(null);
+    
     apiFetch<any>(endpoints.profile, {}, token)
       .then(res => setData(res))
       .catch(err => setError(err.message))
       .finally(() => setIsLoading(false));
-  }, [token]);
+  }, [token, authLoading]);
 
   if (isLoading) return (
     <div className={styles.container}>

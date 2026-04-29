@@ -59,7 +59,7 @@ function gradeColor(grade: number): { bg: string; color: string; label: string }
 }
 
 export default function GradesPage() {
-  const { token } = useAuth();
+  const { token, isLoading: authLoading } = useAuth();
   const [rawData, setRawData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,12 +67,22 @@ export default function GradesPage() {
   const [filterPeriod, setFilterPeriod] = useState('Todos');
 
   useEffect(() => {
-    if (!token) { setError('Sin token.'); setIsLoading(false); return; }
+    if (authLoading) return;
+    
+    if (!token) { 
+      setError('Sin sesión activa.'); 
+      setIsLoading(false); 
+      return; 
+    }
+
+    setIsLoading(true);
+    setError(null);
+
     apiFetch<any>(endpoints.grades, {}, token)
       .then(res => setRawData(res))
       .catch(err => setError(err.message))
       .finally(() => setIsLoading(false));
-  }, [token]);
+  }, [token, authLoading]);
 
   const grades = useMemo(() => rawData ? extractArray(rawData) : [], [rawData]);
   const periods = useMemo(() => ['Todos', ...Array.from(new Set(grades.map(g => getPeriod(g)).filter(Boolean)))], [grades]);
