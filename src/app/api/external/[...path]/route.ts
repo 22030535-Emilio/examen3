@@ -12,6 +12,8 @@ export async function GET(
   const searchParams = request.nextUrl.searchParams.toString();
   const url = `https://sii.celaya.tecnm.mx/${path}${searchParams ? `?${searchParams}` : ''}`;
 
+  console.log(`[DEBUG] Proxy GET hit! Path: ${path}, Target URL: ${url}`);
+
   // Token can come from header OR query param
   const authHeader = request.headers.get('Authorization')
     || request.headers.get('x-auth-token')
@@ -52,6 +54,8 @@ export async function POST(
   const resolvedParams = await params;
   const path = resolvedParams.path.join('/');
   const url = `https://sii.celaya.tecnm.mx/${path}`;
+
+  console.log(`[DEBUG] Proxy POST hit! Path: ${path}, Target URL: ${url}`);
 
   console.log(`[Proxy POST] ${url}`);
 

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const announcements = [
+// In-memory "database" for the demo
+let announcements = [
   {
     id: 1,
     title: 'Convocatoria de Becas 2026',
@@ -26,4 +27,28 @@ const announcements = [
 
 export async function GET() {
   return NextResponse.json(announcements);
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const newAnnouncement = {
+      ...body,
+      id: Date.now(),
+      date: new Date().toISOString().split('T')[0]
+    };
+    announcements = [newAnnouncement, ...announcements];
+    return NextResponse.json(newAnnouncement, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create' }, { status: 400 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+  
+  announcements = announcements.filter(a => a.id !== parseInt(id));
+  return NextResponse.json({ success: true });
 }

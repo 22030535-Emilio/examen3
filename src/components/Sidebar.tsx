@@ -53,6 +53,21 @@ export default function Sidebar() {
       </nav>
 
       <div className={styles.footer}>
+        <Link href="/admin" className={styles.adminLink} style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px', 
+          padding: '12px', 
+          color: '#94a3b8', 
+          textDecoration: 'none',
+          fontSize: '0.9rem',
+          marginBottom: '1rem',
+          border: '1px dashed #334155',
+          borderRadius: '8px'
+        }}>
+          <User size={18} />
+          <span>Portal Profesor</span>
+        </Link>
         <button onClick={logout} className={styles.logoutBtn}>
           <LogOut size={20} />
           <span>Cerrar Sesión</span>
